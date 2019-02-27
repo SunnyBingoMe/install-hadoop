@@ -23,8 +23,12 @@ function install_java {
   sudo apt-get install -y oracle-java8-set-default
 }
 function install_open_java {
-  sudo apt-get install -y oracle-java8-installer
-  sudo apt-get install -y oracle-java8-set-default
+  sudo apt-get update && \
+  sudo apt-get install -y openjdk-8-jdk && \
+  sudo ln -s /usr/lib/jvm/java-8-openjdk-amd64 /opt/jdk && \
+  echo "JAVA_HOME='/opt/jdk'" | sudo tee -a /etc/environment && \
+  source /etc/environment && \
+  echo $JAVA_HOME
 }
 function create_hadoop_user {
   sudo useradd -m hduser
@@ -143,12 +147,7 @@ function setup_environment {
 #confirm "Install Java? [y/N] " && install_java
 
 create_hadoop_user && \
-sudo apt-get update && \
-sudo apt-get install -y openjdk-8-jdk && \
-sudo ln -s /usr/lib/jvm/java-8-openjdk-amd64 /opt/jdk && \
-echo "JAVA_HOME='/opt/jdk'" | sudo tee -a /etc/environment && \
-source /etc/environment && \
-echo $JAVA_HOME && \
+install_open_java && \
 install_hadoop && setup_environment
 #confirm "Create hadoop user? [y/N] " && create_hadoop_user
 #confirm "Install hadoop? [y/N] " && install_hadoop 
