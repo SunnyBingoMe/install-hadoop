@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Note: this script will ask for a new pwd for the user: hduser
+# usage: curl https://raw.githubusercontent.com/SunnyBingoMe/install-hadoop/master/setup-hadoop | bash
+# Note: if wanted, create_hadoop_user will ask for a new pwd for the user: hduser.
 
 # Function for asking to proceed
 confirm () {
