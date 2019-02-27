@@ -2,6 +2,7 @@
 
 # usage: curl https://raw.githubusercontent.com/SunnyBingoMe/install-hadoop/master/setup-hadoop | bash
 # Note: if wanted, create_hadoop_user will ask for a new pwd for the user: hduser.
+# Note: to start-dfs.sh, we need to `su hduser` first.
 
 # Function for asking to proceed
 confirm () {
@@ -15,14 +16,17 @@ confirm () {
       ;;
   esac
 }
+
 function update_apt_repo  {
   sudo add-apt-repository ppa:webupd8team/java
   sudo apt-get update 
-} 
+}
+
 function install_java {
   sudo apt-get install -y oracle-java8-installer
   sudo apt-get install -y oracle-java8-set-default
 }
+
 function install_open_java {
   sudo apt-get update && \
   sudo apt-get install -y openjdk-8-jdk && \
@@ -31,12 +35,14 @@ function install_open_java {
   source /etc/environment && \
   echo $JAVA_HOME
 }
+
 function create_hadoop_user {
   sudo useradd -m hduser
   sudo adduser hduser sudo
   sudo chsh -s /bin/bash hduser
   #sudo passwd hduser
 }
+
 function install_hadoop {
   sudo mkdir -p /usr/local/hadoop/
   cd /usr/local/hadoop
@@ -75,14 +81,12 @@ function setup_core_xml {
     <value>/tmp/hadooop</value>
     <description>Temporary directories.</description>
 </property>
-
 <property>
     <name>fs.default.name</name>
     <value>hdfs://localhost:54310</value>
     <description>A URI whose scheme and authority determine the FileSystem implementation. </description>
 </property>
 </configuration>
-
 EOF
   tmpfile=/tmp/hadoop_fafsa.xml
   sudo chown root $tmpfile
@@ -104,7 +108,6 @@ function setup_mapred_xml {
   <description>The tracker of MapReduce</description>
 </property>
 </configuration>
-
 EOT
   tmpfile=/tmp/hadoop_mapred.xml
   sudo chown root $tmpfile
@@ -126,13 +129,11 @@ function setup_hdfs_xml {
   <description>Number of replication of hdfs</description>
 </property>
 </configuration>
-
 EOF
   tmpfile=/tmp/hadoop_hdfs.xml
   sudo chown root $tmpfile
   sudo mv $tmpfile $file
 }
-
 
 function setup_environment {
   export HADOOP_HOME=/usr/local/hadoop/hadoop-2.7.2
@@ -144,13 +145,6 @@ function setup_environment {
   sudo chown -R hduser $HADOOP_HOME
 }
 
-#confirm "Update Repository? [y/N] " && update_apt_repo 
-#confirm "Install Java? [y/N] " && install_java
-
 create_hadoop_user && \
 install_open_java && \
 install_hadoop && setup_environment
-#confirm "Create hadoop user? [y/N] " && create_hadoop_user
-#confirm "Install hadoop? [y/N] " && install_hadoop 
-#confirm "Setup Hadoop Environment" &&  setup_environment
-
