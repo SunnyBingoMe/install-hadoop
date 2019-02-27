@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Note: this script will ask for a new pwd for the user: hduser
+
 # Function for asking to proceed
 confirm () {
   read -r -p "${1:-Are you sure? [y/N]} " response
@@ -20,20 +22,21 @@ function install_java {
   sudo apt-get install -y oracle-java8-installer
   sudo apt-get install -y oracle-java8-set-default
 }
-
+function install_open_java {
+  sudo apt-get install -y oracle-java8-installer
+  sudo apt-get install -y oracle-java8-set-default
+}
 function create_hadoop_user {
-
   sudo useradd -m hduser
   sudo adduser hduser sudo
   sudo chsh -s /bin/bash hduser
-  sudo passwd hduser
-  
+  #sudo passwd hduser
 }
 function install_hadoop {
   sudo mkdir -p /usr/local/hadoop/
   cd /usr/local/hadoop
   sudo curl http://archive.apache.org/dist/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz | sudo tar xz 
-  sudo chown -R hadoop /usr/local/hadoop
+  sudo chown -R hduser:hduser /usr/local/hadoop
 }
 
 function setup_profile {
@@ -139,13 +142,14 @@ function setup_environment {
 #confirm "Update Repository? [y/N] " && update_apt_repo 
 #confirm "Install Java? [y/N] " && install_java
 
+create_hadoop_user && \
 sudo apt-get update && \
 sudo apt-get install -y openjdk-8-jdk && \
 sudo ln -s /usr/lib/jvm/java-8-openjdk-amd64 /opt/jdk && \
 echo "JAVA_HOME='/opt/jdk'" | sudo tee -a /etc/environment && \
 source /etc/environment && \
 echo $JAVA_HOME && \
-create_hadoop_user && install_hadoop && setup_environment
+install_hadoop && setup_environment
 #confirm "Create hadoop user? [y/N] " && create_hadoop_user
 #confirm "Install hadoop? [y/N] " && install_hadoop 
 #confirm "Setup Hadoop Environment" &&  setup_environment
