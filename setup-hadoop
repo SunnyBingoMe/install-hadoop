@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # usage: curl https://raw.githubusercontent.com/SunnyBingoMe/install-hadoop/master/setup-hadoop | bash
-# Note: if wanted, create_hadoop_user will ask for a new pwd for the user: hduser.
-# Note: to start-dfs.sh, we need to `su hduser` first.
+# Note: if wanted, create_hadoop_user will ask for a new pwd for the user: ${HDUSER}.
+# Note: to start-dfs.sh, we need to `su ${HDUSER}` first.
+
+HDUSER=ubuntu # change to your desired username
 
 # Function for asking to proceed
 confirm () {
@@ -37,24 +39,24 @@ function install_open_java {
 }
 
 function create_hadoop_user {
-  sudo useradd -m hduser
-  sudo adduser hduser sudo
-  sudo chsh -s /bin/bash hduser
-  #sudo passwd hduser
+  sudo useradd -m ${HDUSER}
+  sudo adduser ${HDUSER} sudo
+  sudo chsh -s /bin/bash ${HDUSER}
+  #sudo passwd ${HDUSER}
 }
 
 function install_hadoop {
   sudo mkdir -p /usr/local/hadoop/
   cd /usr/local/hadoop
   sudo curl http://archive.apache.org/dist/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz | sudo tar xz 
-  sudo chown -R hduser:hduser /usr/local/hadoop
+  sudo chown -R ${HDUSER}:${HDUSER} /usr/local/hadoop
 }
 
 function setup_profile {
   local file=/etc/profile.d/hadoop-init.sh
   local tempfile=/tmp/hadoop_setup_sdfds.sh
   sudo mkdir -p /tmp/hadoop
-  sudo chown hduser -R /tmp/hadoop
+  sudo chown -R ${HDUSER}:${HDUSER} /tmp/hadoop
   export HADOOP_HOME=/usr/local/hadoop/hadoop-2.7.2
   export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
   cat >> $tempfile  <<EOT
@@ -79,7 +81,7 @@ function setup_core_xml {
 <property>
     <name>hadoop.tmp.dir</name>
     <value>/tmp/hadooop</value>
-    <description>Temporary directories.</description>
+    <description>optional, temporary directories.</description>
 </property>
 <property>
     <name>fs.default.name</name>
@@ -142,9 +144,9 @@ function setup_environment {
   setup_core_xml
   setup_mapred_xml
   setup_hdfs_xml
-  sudo chown -R hduser $HADOOP_HOME
+  sudo chown -R ${HDUSER}:${HDUSER} $HADOOP_HOME
 }
 
-create_hadoop_user && \
+#create_hadoop_user && \
 install_open_java && \
 install_hadoop && setup_environment
