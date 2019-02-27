@@ -32,7 +32,7 @@ function create_hadoop_user {
 function install_hadoop {
   sudo mkdir -p /usr/local/hadoop/
   cd /usr/local/hadoop
-  sudo curl http://ftp.tc.edu.tw/pub/Apache/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz | sudo tar xz 
+  sudo curl http://archive.apache.org/dist/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz | sudo tar xz 
   sudo chown -R hadoop /usr/local/hadoop
 }
 
