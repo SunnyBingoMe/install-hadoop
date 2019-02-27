@@ -147,6 +147,8 @@ function setup_environment {
   sudo chown -R ${HDUSER}:${HDUSER} $HADOOP_HOME
 }
 
+if [ ! $HDUSER == $USER ] ; then create_hadoop_user; fi
+
 #create_hadoop_user && \
 install_open_java && \
 install_hadoop && setup_environment
