@@ -85,7 +85,7 @@ function setup_core_xml {
 </property>
 <property>
     <name>fs.default.name</name>
-    <value>hdfs://localhost:54310</value>
+    <value>hdfs://localhost:9000</value>
     <description>A URI whose scheme and authority determine the FileSystem implementation. </description>
 </property>
 </configuration>
